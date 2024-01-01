@@ -18,6 +18,12 @@ permissions:
       - '**/*.gitignore'
       - .editorconfig
       - docs/**
+  pull_request:
+    branches:
+      - main
+    types:
+      - created
+      - edited
 jobs:
   build:
     strategy:
