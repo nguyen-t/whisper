@@ -12,6 +12,7 @@ fn compile() -> Result<(), Error> {
     .std("c11")
     .include("whisper")
     .define("NDEBUG", None)
+    .warnings(false)
     .opt_level(3)
     .pic(true);
   cxx_
@@ -20,6 +21,7 @@ fn compile() -> Result<(), Error> {
     .std("c++14")
     .include("whisper")
     .define("NDEBUG", None)
+    .warnings(false)
     .opt_level(3)
     .pic(true);
 
