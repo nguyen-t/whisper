@@ -113,9 +113,9 @@ fn compile() -> Result<(), Error> {
   #[cfg(target_feature = "ssse3")] {
     println!("Feature: {}", "SSSE3");
     cc_
-      .flag("-ssse3");
+      .flag("-mssse3");
     cxx_
-      .flag("-ssse3");
+      .flag("-mssse3");
   }
 
   cc_
