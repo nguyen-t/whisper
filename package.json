@@ -13,7 +13,10 @@
     "ava": "^5.1.1"
   },
   "ava": {
-    "timeout": "3m"
+    "timeout": "3m",
+    "files": [
+      "!whisper/**"
+    ]
   },
   "engines": {
     "node": ">= 10"
