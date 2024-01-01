@@ -9,7 +9,6 @@ fn compile() -> Result<(), Error> {
 
   cc_
     .out_dir("compiles")
-    .compiler("clang-15")
     .std("c11")
     .include("whisper")
     .define("NDEBUG", None)
@@ -138,8 +137,8 @@ fn compile() -> Result<(), Error> {
 fn main() {
   let dir = PathBuf::from(env!("OUT_DIR"));
 
-  println!("cargo:rustc-link-search={}", "whisper");
-  println!("cargo:rustc-link-lib={}", "whisper");
+  println!("cargo:rustc-link-search={}", "compiles");
+  println!("cargo:rustc-link-lib={}", "compiles");
   println!("cargo:rerun-if-changed={}", "whisper");
   println!("cargo:rerun-if-changed={}", "wrapper.h");
   println!("cargo:rerun-if-changed={}", env!("OUT_DIR"));
