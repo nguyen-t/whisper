@@ -281,6 +281,7 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { Whisper } = nativeBinding
+const { WhisperSamplingStrategy, Whisper } = nativeBinding
 
+module.exports.WhisperSamplingStrategy = WhisperSamplingStrategy
 module.exports.Whisper = Whisper
