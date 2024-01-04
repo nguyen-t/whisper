@@ -24,6 +24,8 @@ pub enum WhisperSamplingStrategy {
 pub struct Whisper {
   context: Mutex<*mut whisper_context>,
   params: whisper_full_params,
+  prompt: CString,
+  language: CString,
 }
 
 #[napi]
@@ -44,6 +46,8 @@ impl Whisper {
     Whisper {
       context: Mutex::new(context),
       params: wparams,
+      prompt: CString::new("").unwrap(),
+      language: CString::new("").unwrap(),
     }
   }
 
@@ -252,10 +256,13 @@ impl Whisper {
   //   self
   // }
 
-  // #[napi]
-  // pub fn initial_prompt(&mut self, prompt: String) -> &Self {
-  //   self
-  // }
+  #[napi]
+  pub fn initial_prompt(&mut self, prompt: String) -> &Self {
+    self.prompt = CString::new(prompt).unwrap();
+    self.params.initial_prompt = self.prompt.as_ptr();
+
+    self
+  }
 
   // #[napi]
   // pub fn prompt_tokens(&mut self, prompt: Vec<i32>) -> &Self {
@@ -265,10 +272,13 @@ impl Whisper {
   //   self
   // }
 
-  // #[napi]
-  // pub fn language(&mut self, language: String) -> &Self {
-  //   self
-  // }
+  #[napi]
+  pub fn language(&mut self, country_code: String) -> &Self {
+    self.language = CString::new(country_code).unwrap();
+    self.params.language = self.language.as_ptr();
+
+    self
+  }
 
   #[napi]
   pub fn suppress_blank(&mut self, hide_blanks: bool) -> &Self {

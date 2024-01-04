@@ -32,6 +32,8 @@ export class Whisper {
   speedUp(enableFastforward: boolean): this
   debugMode(enableDebug: boolean): this
   audioCtx(contextLength: number): this
+  initialPrompt(prompt: string): this
+  language(countryCode: string): this
   suppressBlank(hideBlanks: boolean): this
   suppressNonSpeechTokens(hideNonSpeechTokens: boolean): this
   temperature(value: number): this
