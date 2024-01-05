@@ -17,5 +17,5 @@ rustfmt.toml
 yarn.lock
 renovate.json
 wrapper.h
-*.node
 *.rs
+./*.node

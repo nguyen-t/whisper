@@ -31,5 +31,10 @@
     "universal": "napi universal",
     "version": "napi version"
   },
-  "packageManager": "yarn@4.0.2"
+  "packageManager": "yarn@4.0.2",
+  "optionalDependencies": {
+    "@nguyen-t/whisper-win32-x64-msvc": "0.0.1",
+    "@nguyen-t/whisper-darwin-x64": "0.0.1",
+    "@nguyen-t/whisper-linux-x64-gnu": "0.0.1"
+  }
 }
