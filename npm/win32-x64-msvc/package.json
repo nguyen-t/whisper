@@ -1,6 +1,9 @@
 {
   "name": "@nguyen-t/whisper-win32-x64-msvc",
   "version": "0.0.0",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
   "os": [
     "win32"
   ],

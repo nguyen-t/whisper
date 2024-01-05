@@ -1,6 +1,9 @@
 {
   "name": "@nguyen-t/whisper-darwin-x64",
   "version": "0.0.0",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
   "os": [
     "darwin"
   ],
