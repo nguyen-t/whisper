@@ -197,5 +197,6 @@ Cargo.lock
 
 *.node
 
-compiles/*
-bindings/*
+@nguyen-t/
+compiles/
+bindings/
