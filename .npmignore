@@ -4,6 +4,7 @@
 npm/
 __test__/
 whisper/
+artifacts/
 bindings/
 src/
 target/
