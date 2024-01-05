@@ -28,13 +28,44 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@nguyen-t/whisper-darwin-x64@npm:0.0.0":
+  version: 0.0.0
+  resolution: "@nguyen-t/whisper-darwin-x64@npm:0.0.0"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-linux-x64-gnu@npm:0.0.0":
+  version: 0.0.0
+  resolution: "@nguyen-t/whisper-linux-x64-gnu@npm:0.0.0"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-win32-x64-msvc@npm:0.0.0":
+  version: 0.0.0
+  resolution: "@nguyen-t/whisper-win32-x64-msvc@npm:0.0.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@nguyen-t/whisper@workspace:.":
   version: 0.0.0-use.local
   resolution: "@nguyen-t/whisper@workspace:."
   dependencies:
     "@napi-rs/cli": "npm:^2.17.0"
+    "@nguyen-t/whisper-darwin-x64": "npm:0.0.0"
+    "@nguyen-t/whisper-linux-x64-gnu": "npm:0.0.0"
+    "@nguyen-t/whisper-win32-x64-msvc": "npm:0.0.0"
     "@types/node": "npm:^20.10.6"
     ava: "npm:^5.1.1"
+  dependenciesMeta:
+    "@nguyen-t/whisper-darwin-x64":
+      optional: true
+    "@nguyen-t/whisper-linux-x64-gnu":
+      optional: true
+    "@nguyen-t/whisper-win32-x64-msvc":
+      optional: true
   languageName: unknown
   linkType: soft
 
