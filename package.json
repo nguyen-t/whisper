@@ -7,6 +7,9 @@
     "ggml"
   ],
   "author": "nguyen-t",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
   "homepage": "https://github.com/nguyen-t/whisper#readme",
   "bugs": {
     "url": "https://github.com/nguyen-t/whisper/issues"
@@ -42,8 +45,5 @@
     "universal": "napi universal",
     "version": "napi version"
   },
-  "packageManager": "yarn@4.0.2",
-  "repository": {
-    "url": "https://github.com/nguyen-t/whisper"
-  }
+  "packageManager": "yarn@4.0.2"
 }
