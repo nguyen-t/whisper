@@ -2,7 +2,13 @@
 extern crate bindgen;
 extern crate napi_build;
 
-use std::{path::PathBuf, arch::{is_arm_feature_detected, is_aarch64_feature_detected}};
+
+use std::path::PathBuf;
+use std::arch::{
+  is_x86_feature_detected,
+  is_arm_feature_detected,
+  is_aarch64_feature_detected,
+};
 
 fn main() {
   let dir = PathBuf::from(env!("OUT_DIR"));
