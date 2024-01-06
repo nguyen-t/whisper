@@ -1,4 +1,5 @@
 #![feature(stdsimd)]
+#![allow(unused_imports)]
 extern crate bindgen;
 extern crate napi_build;
 
