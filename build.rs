@@ -1,7 +1,8 @@
+#![feature(stdsimd)]
 extern crate bindgen;
 extern crate napi_build;
 
-use std::path::PathBuf;
+use std::{path::PathBuf, arch::{is_arm_feature_detected, is_aarch64_feature_detected}};
 
 fn main() {
   let dir = PathBuf::from(env!("OUT_DIR"));
@@ -13,6 +14,13 @@ fn main() {
   println!("cargo:rerun-if-changed={}", "whisper");
   println!("cargo:rerun-if-changed={}", "wrapper.h");
 
+  #[cfg(target_family = "unix")] {
+    println!("Family: Unix");
+    cc_
+      .flag("-pthread");
+    cxx_
+      .flag("-pthread");
+  }
   #[cfg(target_os = "openbsd")] {
     println!("OS: OpenBSD");
     cc_
@@ -57,61 +65,91 @@ fn main() {
     cxx_
       .define("_NETBSD_SOURCE", None);
   }
-  #[cfg(target_family = "unix")] {
-    println!("Family: Unix");
+  
+  #[cfg(target_arch = "aarch64")] {
+    println!("Architecture: AARCH64");
     cc_
-      .flag("-pthread");
+      .flag("-mcpu=native");
     cxx_
-      .flag("-pthread");
+      .flag("-mcpu=native");
   }
-
-  #[cfg(target_feature = "avx")] {
-    println!("Feature: AVX");
-    cc_
-      .flag("-mavx");
-    cxx_
-      .flag("-mavx");
+  #[cfg(all(target_arch = "arm", target_pointer_width = "32"))] {
+    if is_arm_feature_detected!("neon") {
+      println!("Feature: NEON 32 Bit");
+      cc_
+        .flag("-mfpu=neon")
+        .flag("-mfp16-format=ieee")
+        .flag("-mno-unaligned-access");
+      cxx_
+        .flag("-mfpu=neon")
+        .flag("-mfp16-format=ieee")
+        .flag("-mno-unaligned-access");
+    }
   }
-  #[cfg(target_feature = "avx2")] {
-    println!("Feature: AVX2");
-    cc_
-      .flag("-mavx2");
-    cxx_
-      .flag("-mavx2");
+  #[cfg(all(any(target_arch = "arm", target_arch = "aarch64"), target_pointer_width = "64"))] {
+    if is_arm_feature_detected!("neon") || is_aarch64_feature_detected!("neon") {
+      println!("Feature: NEON 64 Bit");
+      cc_
+        .flag("-mfpu=neon-fp-armv8")
+        .flag("-mfp16-format=ieee")
+        .flag("-mno-unaligned-access")
+        .flag("-funsafe-math-optimizations");
+      cxx_
+        .flag("-mfpu=neon-fp-armv8")
+        .flag("-mfp16-format=ieee")
+        .flag("-mno-unaligned-access")
+        .flag("-funsafe-math-optimizations");
+    }
   }
-  #[cfg(target_feature = "fma")] {
-    println!("Feature: FMA");
-    cc_
-      .flag("-mfma");
-    cxx_
-      .flag("-mfma");
+  #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
+    if is_x86_feature_detected!("avx") {
+      println!("Feature: AVX");
+      cc_
+        .flag("-mavx");
+      cxx_
+        .flag("-mavx");
+    }
+    if is_x86_feature_detected!("avx2") {
+      println!("Feature: AVX2");
+      cc_
+        .flag("-mavx2");
+      cxx_
+        .flag("-mavx2");
+    }
+    if is_x86_feature_detected!("fma") {
+      println!("Feature: FMA");
+      cc_
+        .flag("-mfma");
+      cxx_
+        .flag("-mfma");
+    }
+    if is_x86_feature_detected!("f16c") {
+      println!("Feature: F16C");
+      cc_
+        .flag("-mf16c");
+      cxx_
+        .flag("-mf16c");
+    }
+    if is_x86_feature_detected!("sse3") {
+      println!("Feature: SSE3");
+      cc_
+        .flag("-msse3");
+      cxx_
+        .flag("-msse3");
+    }
+    if is_x86_feature_detected!("ssse3") {
+      println!("Feature: SSSE3");
+      cc_
+        .flag("-mssse3");
+      cxx_
+        .flag("-mssse3");
+    }
   }
-  #[cfg(target_feature = "f16c")] {
-    println!("Feature: F16C");
-    cc_
-      .flag("-mf16c");
-    cxx_
-      .flag("-mf16c");
-  }
-  #[cfg(target_feature = "sse3")] {
-    println!("Feature: SSE3");
-    cc_
-      .flag("-msse3");
-    cxx_
-      .flag("-msse3");
-  }
-  #[cfg(target_feature = "ssse3")] {
-    println!("Feature: SSSE3");
-    cc_
-      .flag("-mssse3");
-    cxx_
-      .flag("-mssse3");
-  }
-
   cc_
     .cpp(false)
     .std("c11")
     .include("whisper")
+    .include("whisper/coreml")
     .define("NDEBUG", None)
     .warnings(false)
     .opt_level(3)
@@ -126,6 +164,7 @@ fn main() {
     .cpp(true)
     .std("c++14")
     .include("whisper")
+    .include("whisper/coreml")
     .define("NDEBUG", None)
     .warnings(false)
     .opt_level(3)
