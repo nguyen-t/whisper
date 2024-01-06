@@ -62,7 +62,6 @@ jobs:
           cache: yarn
       - name: Install
         uses: dtolnay/rust-toolchain@stable
-        if: ${{ !matrix.settings.docker }}
         with:
           toolchain: nightly
           targets: ${{ matrix.settings.target }}

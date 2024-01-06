@@ -18,4 +18,4 @@ yarn.lock
 renovate.json
 wrapper.h
 *.rs
-./*.node
+*.node
