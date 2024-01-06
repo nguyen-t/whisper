@@ -1,0 +1,21 @@
+{
+  "name": "@nguyen-t/whisper-linux-arm-gnueabihf",
+  "version": "0.0.3",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm"
+  ],
+  "main": "whisper.linux-arm-gnueabihf.node",
+  "files": [
+    "whisper.linux-arm-gnueabihf.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  }
+}
