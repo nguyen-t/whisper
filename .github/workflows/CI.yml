@@ -76,11 +76,13 @@ jobs:
             .cargo-cache
             target/
       - name: Install Dependencies (Local)
+        if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
         run: |
           yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
           yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
           yarn install
       - name: Build Addon (Local)
+        if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
         run: |
           yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
           yarn test
@@ -88,7 +90,7 @@ jobs:
           CC: clang
           CXX: clang++
       - name: Setup QEMU (Docker)
-        if: ${{ matrix.settings.qemu }}
+        if: ${{ matrix.settings.docker }} && ${{ matrix.settings.qemu }}
         uses: docker/setup-qemu-action@v3
         with:
           platforms: ${{ matrix.settings.qemu }}
@@ -99,6 +101,7 @@ jobs:
           image: ${{ matrix.settings.docker }}
           options: >
             --user 0:0
+            --platform ${{ matrix.settings.qemu }}
             -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db
             -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache
             -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index
