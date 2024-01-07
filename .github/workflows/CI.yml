@@ -38,7 +38,7 @@ jobs:
             target: x86_64-unknown-linux-musl
             setup: |
               sudo apt update
-              sudo apt install musl
+              sudo apt install musl-dev
     name: Build - ${{ matrix.settings.target }}
     runs-on: ${{ matrix.settings.host }}
     steps:
