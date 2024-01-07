@@ -77,8 +77,8 @@ jobs:
             ~/.cargo/git/db/
             .cargo-cache
             target/
-      - name: Setup Zig
-        uses: goto-bus-stop/setup-zig@v2
+      # - name: Setup Zig
+      #   uses: goto-bus-stop/setup-zig@v2
       - name: Setup Environment
         if: ${{ matrix.settings.setup }}
         run: ${{ matrix.settings.setup }}
