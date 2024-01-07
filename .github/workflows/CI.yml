@@ -99,7 +99,7 @@ jobs:
               arch: x86_64
               sys: unknown-linux
               env: musl
-              docker: node:current-slim
+              docker: node:alpine-latest
     name: Test - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     needs: build
