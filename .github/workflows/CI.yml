@@ -42,9 +42,7 @@ jobs:
             env: musl
             setup: |
               sudo apt update
-              sudo apt install musl
-              sudo apt install musl-tools
-              sudo ln -s /bin/g++ /bin/musl-g++
+              sudo apt install clang
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
