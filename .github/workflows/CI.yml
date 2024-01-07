@@ -41,13 +41,13 @@ jobs:
             arch: x86_64
             sys: unknown-linux
             env: musl
-            docker: node:current-alpine
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             qemu: linux/amd64
           - host: ubuntu-latest
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            docker: node:current-bookworm-slim
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
@@ -60,11 +60,6 @@ jobs:
         with:
             node-version: 20
             cache: yarn
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: nightly
-          targets: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
       - name: Cache Cargo
         uses: actions/cache@v3
         with:
@@ -75,6 +70,12 @@ jobs:
             ~/.cargo/git/db/
             .cargo-cache
             target/
+      - name: Setup Rust (Local)
+        if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          targets: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
       - name: Install Dependencies (Local)
         if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
         run: |
