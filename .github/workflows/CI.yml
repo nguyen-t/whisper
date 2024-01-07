@@ -90,7 +90,12 @@ jobs:
         with:
           name: bindings-${{ matrix.settings.target }}
           path: .
-      - name: Install Dependencies
+      - name: Setup Node.js (Local)
+        uses: actions/setup-node@v4
+        with:
+            node-version: 20
+            cache: yarn
+      - name: Install Dependencies (Local)
         run: yarn install
       - name: Run Tests (Local)
         run: yarn test
