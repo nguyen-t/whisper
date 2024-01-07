@@ -13,6 +13,10 @@ use std::arch::{
 
 fn main() {
   let dir = PathBuf::from(env!("OUT_DIR"));
+  let host_triple = std::env::var("HOST").unwrap();
+  let target_triple = std::env::var("TARGET").unwrap();
+  let host = host_triple.split("-").collect::<Vec<&str>>()[0];
+  let target = target_triple.split("-").collect::<Vec<&str>>()[0];
   let mut cc_ = cc::Build::new();
   let mut cxx_ = cc::Build::new();
 
@@ -20,6 +24,9 @@ fn main() {
   println!("cargo:rustc-link-lib={}", "whisper");
   println!("cargo:rerun-if-changed={}", "whisper");
   println!("cargo:rerun-if-changed={}", "wrapper.h");
+
+  println!("Host Architecture: {}", host);
+  println!("Target Architecture: {}", target);
 
   #[cfg(target_family = "unix")] {
     println!("Family: Unix");
