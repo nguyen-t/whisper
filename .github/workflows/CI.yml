@@ -44,6 +44,13 @@ jobs:
             setup: |
               sudo apt update
               sudo apt install clang
+          - host: ubuntu-latest
+            arch: aarch64
+            sys: unknown-linux
+            env: gnu
+            setup: |
+              sudo apt update
+              sudo apt install clang
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -104,6 +111,13 @@ jobs:
               sys: unknown-linux
               env: musl
               docker: node:current-alpine
+              qemu: linux/amd64
+            - host: ubuntu-latest
+              arch: aarch64
+              sys: unknown-linux
+              env: gnu
+              docker: node:current-bookworm-slim
+              qemu: linux/arm64
     name: Test - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     needs: build
@@ -128,12 +142,17 @@ jobs:
       - name: Run Tests (Local)
         if: ${{ !matrix.settings.docker }}
         run: yarn test
+      - name: Setup QEMU
+        if: ${{ matrix.settings.qemu }}
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ matrix.settings.qemu }}
       - name: Run Tests (Docker)
         if: ${{ matrix.settings.docker }}
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ matrix.settings.docker }}
-          options: '--user 0:0 -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index -v ${{ github.workspace }}:/build -w /build'
+          options: '${{ github.workspace }}:/build -w /build'
           run: |
             yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
             yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
