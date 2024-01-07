@@ -66,6 +66,12 @@ jobs:
         run: yarn install
       - name: Build Addon
         run: yarn build --target ${{ matrix.settings.target }}
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings-${{ matrix.settings.target }}
+          path: ${{ env.APP_NAME }}.*.node
+          if-no-files-found: error
   test:
     strategy:
         matrix:
