@@ -30,6 +30,7 @@ on:
 jobs:
   build:
     strategy:
+      fail-fast: false
       matrix:
         settings:
           - host: ubuntu-latest
@@ -43,8 +44,6 @@ jobs:
             setup: |
               sudo apt update
               sudo apt install clang
-              CC=/usr/bin/clang
-              CXX=/usr/bin/clang++
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -81,6 +80,9 @@ jobs:
           yarn install
       - name: Build Addon
         run: yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
+        env:
+          CC: clang
+          CXX: clang++
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
