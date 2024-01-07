@@ -43,7 +43,7 @@ jobs:
             setup: |
               sudo apt update
               sudo apt install musl
-              sudo ln -s /bin/gcc /bin/musl-gcc
+              sudo apt install musl-tools
               sudo ln -s /bin/g++ /bin/musl-g++
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
