@@ -41,16 +41,14 @@ jobs:
             arch: x86_64
             sys: unknown-linux
             env: musl
-            setup: |
-              sudo apt update
-              sudo apt install clang
+            docker: node:current-alpine
+            qemu: linux/amd64
           - host: ubuntu-latest
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            setup: |
-              sudo apt update
-              sudo apt install clang
+            docker: node:current-bookworm-slim
+            qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -77,88 +75,44 @@ jobs:
             ~/.cargo/git/db/
             .cargo-cache
             target/
-      # - name: Setup Zig
-      #   uses: goto-bus-stop/setup-zig@v2
-      - name: Setup Environment
-        if: ${{ matrix.settings.setup }}
-        run: ${{ matrix.settings.setup }}
-      - name: Install Dependencies
+      - name: Install Dependencies (Local)
         run: |
           yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
           yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
           yarn install
-      - name: Build Addon
-        run: yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
+      - name: Build Addon (Local)
+        run: |
+          yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
+          yarn test
         env:
           CC: clang
           CXX: clang++
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: bindings-${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
-          path: ${{ env.APP_NAME }}.*.node
-          if-no-files-found: error
-  test:
-    strategy:
-        matrix:
-          settings:
-            - host: ubuntu-latest
-              arch: x86_64
-              sys: unknown-linux
-              env: gnu
-            - host: ubuntu-latest
-              arch: x86_64
-              sys: unknown-linux
-              env: musl
-              docker: node:current-alpine
-              qemu: linux/amd64
-            - host: ubuntu-latest
-              arch: aarch64
-              sys: unknown-linux
-              env: gnu
-              docker: node:current-bookworm-slim
-              qemu: linux/arm64
-    name: Test - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
-    runs-on: ${{ matrix.settings.host }}
-    needs: build
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
-          path: .
-      - name: Setup Node.js (Local)
-        if: ${{ !matrix.settings.docker }}
-        uses: actions/setup-node@v4
-        with:
-            node-version: 20
-            cache: yarn
-      - name: Install Dependencies (Local)
-        if: ${{ !matrix.settings.docker }}
-        run: yarn install
-      - name: Run Tests (Local)
-        if: ${{ !matrix.settings.docker }}
-        run: yarn test
-      - name: Setup QEMU
+      - name: Setup QEMU (Docker)
         if: ${{ matrix.settings.qemu }}
         uses: docker/setup-qemu-action@v3
         with:
           platforms: ${{ matrix.settings.qemu }}
-      - name: Run Tests (Docker)
-        if: ${{ matrix.settings.docker }}
+      - name: Build Addon (Docker)
         uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
         with:
           image: ${{ matrix.settings.docker }}
-          options: '${{ github.workspace }}:/build -w /build'
+          options: >
+            --user 0:0
+            -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db
+            -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache
+            -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index
+            -v ${{ github.workspace }}:/build
+            -w /build
           run: |
             yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
             yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
             yarn install
+            yarn build
             yarn test
-          
-      
-      
-        
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: bindings-${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
+      #     path: ${{ env.APP_NAME }}.*.node
+      #     if-no-files-found: error
