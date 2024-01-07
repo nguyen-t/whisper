@@ -43,6 +43,8 @@ jobs:
             setup: |
               sudo apt update
               sudo apt install clang
+              CC=/usr/bin/clang
+              CXX=/usr/bin/clang++
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
