@@ -105,7 +105,7 @@ jobs:
             --user 0:0
             --platform ${{ matrix.settings.qemu }}
             -v ${{ github.workspace }}/.cargo-cache/git/db
-            -v ${{ github.workspace }}/.cargo/registry/cache:
+            -v ${{ github.workspace }}/.cargo/registry/cache
             -v ${{ github.workspace }}/.cargo/registry/index
             -v ${{ github.workspace }}:/build
             -w /build
