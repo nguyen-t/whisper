@@ -91,11 +91,11 @@ fn main() {
       println!("Feature: NEON 32 Bit");
       cc_
         .flag("-mfpu=neon")
-        .flag("-mfp16-format=ieee")
+        // .flag("-mfp16-format=ieee")
         .flag("-mno-unaligned-access");
       cxx_
         .flag("-mfpu=neon")
-        .flag("-mfp16-format=ieee")
+        // .flag("-mfp16-format=ieee")
         .flag("-mno-unaligned-access");
     }
   }
@@ -104,12 +104,12 @@ fn main() {
       println!("Feature: NEON 64 Bit");
       cc_
         .flag("-mfpu=neon-fp-armv8")
-        .flag("-mfp16-format=ieee")
+        // .flag("-mfp16-format=ieee")
         .flag("-mno-unaligned-access")
         .flag("-funsafe-math-optimizations");
       cxx_
         .flag("-mfpu=neon-fp-armv8")
-        .flag("-mfp16-format=ieee")
+        // .flag("-mfp16-format=ieee")
         .flag("-mno-unaligned-access")
         .flag("-funsafe-math-optimizations");
     }

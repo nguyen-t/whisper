@@ -43,6 +43,8 @@ jobs:
             env: musl
             docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             qemu: linux/amd64
+            setup: |
+              apk add --no-cache musl-dev
           - host: ubuntu-latest
             arch: aarch64
             sys: unknown-linux
