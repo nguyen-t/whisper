@@ -109,7 +109,7 @@ jobs:
             -v ${{ github.workspace }}/.cargo/registry/cache
             -v ${{ github.workspace }}/.cargo/registry/index
             -v ${{ github.workspace }}:/build
-            -w /builddpc
+            -w /build
           run: |
             rustup toolchain install nightly
             rustup target add ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
