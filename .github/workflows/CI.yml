@@ -47,7 +47,7 @@ jobs:
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:ltsb-debian-aarch64
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
