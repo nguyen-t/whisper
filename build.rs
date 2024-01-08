@@ -3,8 +3,6 @@
 extern crate bindgen;
 extern crate napi_build;
 
-
-use std::intrinsics::mir::Goto;
 use std::path::PathBuf;
 use std::arch::{
   is_x86_feature_detected,
