@@ -41,7 +41,7 @@ jobs:
             arch: x86_64
             sys: unknown-linux
             env: musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            docker: node:current-alpine
             qemu: linux/amd64
             setup: |
               apk add --no-cache musl-dev
@@ -49,7 +49,7 @@ jobs:
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+            docker: current-bookworm-slim
             qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
@@ -110,7 +110,7 @@ jobs:
             -v ${{ github.workspace }}/.cargo/registry/cache
             -v ${{ github.workspace }}/.cargo/registry/index
             -v ${{ github.workspace }}:/build
-            -w /build
+            -w /builddpc
           run: |
             rustup toolchain install nightly
             rustup target add ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
