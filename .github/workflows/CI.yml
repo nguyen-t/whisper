@@ -41,7 +41,7 @@ jobs:
             arch: x86_64
             sys: unknown-linux
             env: musl
-            docker: node:current-alpine
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
             qemu: linux/amd64
             setup: |
               apk add --no-cache musl-dev
@@ -49,7 +49,7 @@ jobs:
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            docker: current-bookworm-slim
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
             qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
@@ -68,25 +68,24 @@ jobs:
             .cargo-cache
             target/
       # - name: Setup Node.js (Local)
-      #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
-      #   uses: actions/setup-node@v4
+      #   if: ${{ !matrix.settings.docker }}
       #   with:
       #       node-version: 20
       #       cache: yarn
       # - name: Setup Rust (Local)
-      #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
+      #   if: ${{ !matrix.settings.docker }}
       #   uses: dtolnay/rust-toolchain@stable
       #   with:
       #     toolchain: nightly
       #     targets: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
       # - name: Install Dependencies (Local)
-      #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
+      #   if: ${{ !matrix.settings.docker }}
       #   run: |
       #     yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
       #     yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
       #     yarn install
       # - name: Build Addon (Local)
-      #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
+      #   if: ${{ !matrix.settings.docker }}
       #   run: |
       #     yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
       #     yarn test
