@@ -55,11 +55,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-            node-version: 20
-            cache: yarn
       - name: Cache Cargo
         uses: actions/cache@v3
         with:
@@ -70,12 +65,18 @@ jobs:
             ~/.cargo/git/db/
             .cargo-cache
             target/
-      - name: Setup Rust (Local)
-        if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: nightly
-          targets: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
+      # - name: Setup Node.js (Local)
+      #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
+      #   uses: actions/setup-node@v4
+      #   with:
+      #       node-version: 20
+      #       cache: yarn
+      # - name: Setup Rust (Local)
+      #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
+      #   uses: dtolnay/rust-toolchain@stable
+      #   with:
+      #     toolchain: nightly
+      #     targets: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
       # - name: Install Dependencies (Local)
       #   if: ${{ !matrix.settings.docker }} && ${{ !matrix.settings.qemu }}
       #   run: |
@@ -109,7 +110,7 @@ jobs:
             -v ${{ github.workspace }}:/build
             -w /build
           run: |
-            rustup install toolchain nightly
+            rustup toolchain install nightly
             rustup target add ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
             rustup default nightly
             yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"

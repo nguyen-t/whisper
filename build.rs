@@ -87,7 +87,7 @@ fn main() {
     cxx_
       .flag("-mcpu=native");
   }
-  #[cfg(all(target_arch = "arm", target_pointer_width = "32"))] {
+  #[cfg(target_arch = "arm")] {
     if is_arm_feature_detected!("neon") {
       println!("Feature: NEON 32 Bit");
       cc_
@@ -100,7 +100,7 @@ fn main() {
         .flag("-mno-unaligned-access");
     }
   }
-  #[cfg(all(any(target_arch = "arm", target_arch = "aarch64"), target_pointer_width = "64"))] {
+  #[cfg(target_arch = "aarch64")] {
     if is_arm_feature_detected!("neon") || is_aarch64_feature_detected!("neon") {
       println!("Feature: NEON 64 Bit");
       cc_
