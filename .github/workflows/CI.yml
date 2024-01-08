@@ -41,7 +41,7 @@ jobs:
             arch: x86_64
             sys: unknown-linux
             env: musl
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-alpine-zig
             qemu: linux/amd64
             setup: |
               apk add --no-cache musl-dev
@@ -49,7 +49,7 @@ jobs:
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
             qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
