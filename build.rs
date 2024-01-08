@@ -86,34 +86,30 @@ fn main() {
     cxx_
       .flag("-mcpu=native");
   }
-  #[cfg(target_arch = "arm")] {
-    if is_arm_feature_detected!("neon") {
-      println!("Feature: NEON 32 Bit");
-      cc_
-        .flag("-mfpu=neon")
-        // .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access");
-      cxx_
-        .flag("-mfpu=neon")
-        // .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access");
-    }
-  }
-  #[cfg(target_arch = "aarch64")] {
-    if is_aarch64_feature_detected!("neon") {
-      println!("Feature: NEON 64 Bit");
-      cc_
-        .flag("-mfpu=neon-fp-armv8")
-        // .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access")
-        .flag("-funsafe-math-optimizations");
-      cxx_
-        .flag("-mfpu=neon-fp-armv8")
-        // .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access")
-        .flag("-funsafe-math-optimizations");
-    }
-  }
+  // #[cfg(target_arch = "arm")] {
+  //   if is_arm_feature_detected!("neon") {
+  //     println!("Feature: NEON 32 Bit");
+  //     cc_
+  //       .flag("-mfpu=neon")
+  //       .flag("-mno-unaligned-access");
+  //     cxx_
+  //       .flag("-mfpu=neon")
+  //       .flag("-mno-unaligned-access");
+  //   }
+  // }
+  // #[cfg(target_arch = "aarch64")] {
+  //   if is_aarch64_feature_detected!("neon") {
+  //     println!("Feature: NEON 64 Bit");
+  //     cc_
+  //       .flag("-mfpu=neon-fp-armv8")
+  //       .flag("-mno-unaligned-access")
+  //       .flag("-funsafe-math-optimizations");
+  //     cxx_
+  //       .flag("-mfpu=neon-fp-armv8")
+  //       .flag("-mno-unaligned-access")
+  //       .flag("-funsafe-math-optimizations");
+  //   }
+  // }
   #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
     if is_x86_feature_detected!("avx") {
       println!("Feature: AVX");
