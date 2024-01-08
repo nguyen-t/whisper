@@ -47,7 +47,7 @@ jobs:
             arch: aarch64
             sys: unknown-linux
             env: gnu
-            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+            docker: ghcr.io/napi-rs/napi-rs/nodejs-rust:ltsb-debian-aarch64
             qemu: linux/arm64
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
@@ -104,9 +104,9 @@ jobs:
           options: >
             --user 0:0
             --platform ${{ matrix.settings.qemu }}
-            -v ${{ github.workspace }}/.cargo-cache/git/db:/usr/local/cargo/git/db
-            -v ${{ github.workspace }}/.cargo/registry/cache:/usr/local/cargo/registry/cache
-            -v ${{ github.workspace }}/.cargo/registry/index:/usr/local/cargo/registry/index
+            -v ${{ github.workspace }}/.cargo-cache/git/db
+            -v ${{ github.workspace }}/.cargo/registry/cache:
+            -v ${{ github.workspace }}/.cargo/registry/index
             -v ${{ github.workspace }}:/build
             -w /build
           run: |
