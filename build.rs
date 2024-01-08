@@ -4,6 +4,7 @@ extern crate bindgen;
 extern crate napi_build;
 
 
+use std::intrinsics::mir::Goto;
 use std::path::PathBuf;
 use std::arch::{
   is_x86_feature_detected,
@@ -101,7 +102,7 @@ fn main() {
     }
   }
   #[cfg(target_arch = "aarch64")] {
-    if is_arm_feature_detected!("neon") || is_aarch64_feature_detected!("neon") {
+    if is_aarch64_feature_detected!("neon") {
       println!("Feature: NEON 64 Bit");
       cc_
         .flag("-mfpu=neon-fp-armv8")
@@ -159,6 +160,7 @@ fn main() {
         .flag("-mssse3");
     }
   }
+
   cc_
     .cpp(false)
     .std("c11")
