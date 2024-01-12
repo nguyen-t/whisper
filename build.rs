@@ -174,6 +174,7 @@ fn main() {
   cxx_
     .cpp(true)
     .std("c++14")
+    .flag("-latomic")
     .include("whisper")
     .include("whisper/coreml")
     .define("NDEBUG", None)
