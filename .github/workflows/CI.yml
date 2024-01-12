@@ -109,7 +109,7 @@ jobs:
             -v ${{ github.workspace }}:/build
             -w /build
           run: |
-            apk add --no-cache musl-dev
+            apk add --no-cache libstdc++-dev
             rustup toolchain install nightly
             rustup target add ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
             rustup default nightly
