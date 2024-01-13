@@ -161,7 +161,7 @@ jobs:
             -w /build
           run: |
             yarn install
-            yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
+            yarn build
             yarn test
       # - name: Upload Artifact
       #   uses: actions/upload-artifact@v3
