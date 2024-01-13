@@ -1,15 +1,8 @@
-FROM node:current-alpine AS node
-
-FROM rust:alpine
-COPY --from=node /usr/lib /usr/lib
-COPY --from=node /usr/local/share /usr/local/share
-COPY --from=node /usr/local/lib /usr/local/lib
-COPY --from=node /usr/local/include /usr/local/include
-COPY --from=node /usr/local/bin /usr/local/bin
-
 RUN apk add --no-cache gcc
 RUN apk add --no-cache g++
 RUN apk add --no-cache clang-dev
-RUN apk add --no-cache yarn
+RUN apk add --no-cache nodejs
+RUN apk add --no-cache npm
+RUN npm i -g yarn
 RUN rustup toolchain install nightly
 RUN rustup default nightly
