@@ -49,6 +49,18 @@ jobs:
             env: gnu
             docker: napi-custom-aarch64-unknown-linux-gnu:latest
             qemu: linux/arm64
+          - host: ubuntu-latest
+            arch: aarch64
+            sys: unknown-linux
+            env: gnu
+            docker: napi-custom-aarch64-unknown-linux-musl:latest
+            qemu: linux/arm64
+          - host: ubuntu-latest
+            arch: armv7
+            sys: unknown-linux
+            env: gnueabihf
+            docker: napi-custom-armv7-unknown-linux-gnueabihf:latest
+            qemu: linux/arm/v7
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
