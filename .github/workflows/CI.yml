@@ -3,6 +3,7 @@ env:
   DEBUG: napi:*
   APP_NAME: whisper
   MACOSX_DEPLOYMENT_TARGET: '10.13'
+  PUBLISH: false
 permissions:
   contents: write
   id-token: write
@@ -27,22 +28,23 @@ on:
       - '**/*.gitignore'
       - .editorconfig
       - docs/**
+
 jobs:
   build:
     strategy:
       fail-fast: false
       matrix:
         settings:
-          # - host: macos-latest
-          #   arch: x86_64
-          #   sys: apple
-          #   env: darwin
-          #   test: true
-          # - host: macos-latest
-          #   arch: aarch64
-          #   sys: apple
-          #   env: darwin
-          #   test: false
+          - host: macos-latest
+            arch: x86_64
+            sys: apple
+            env: darwin
+            test: true
+          - host: macos-latest
+            arch: aarch64
+            sys: apple
+            env: darwin
+            test: false
           # - host: windows-latest
           #   arch: x86_64
           #   sys: pc-windows
@@ -58,11 +60,11 @@ jobs:
           #   sys: pc-windows
           #   env: msvc
           #   test: false
-          - host: ubuntu-latest
-            arch: x86_64
-            sys: unknown-linux
-            env: gnu
-            test: true
+          # - host: ubuntu-latest
+          #   arch: x86_64
+          #   sys: unknown-linux
+          #   env: gnu
+          #   test: true
           # - host: ubuntu-latest
           #   arch: x86_64
           #   sys: unknown-linux
@@ -205,9 +207,23 @@ jobs:
     name: Version Check
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: yarn
       - name: Compare Version
         run: |
-          echo ${{ github.ref_name }}
+          [[ $(git tag --list | tail -n 1) != "v$(npm pkg get version | tr -d '"')" ]] && true >> $PUBLISH
+  test-print:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        if: ${{ env.PUBLISH }}
+        run: echo ${{ env.PUBLISH }}
   publish:
     name: Publish
     runs-on: ubuntu-latest
@@ -220,22 +236,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: yarn
-      - name: Install dependencies
+      - name: Install Dependencies
         run: yarn install
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
           path: artifacts
-      - name: Move artifacts
+      - name: Move Artifacts
         run: yarn artifacts
-      - name: List packages
-        run: ls -R ./npm
-        shell: bash
       - name: Publish
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
