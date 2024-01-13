@@ -1,4 +1,4 @@
-FROM node:alpine-latest AS node
+FROM node:current-alpine AS node
 
 FROM rust:alpine
 COPY --from=node /usr/lib /usr/lib
