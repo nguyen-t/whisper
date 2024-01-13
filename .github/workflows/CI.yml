@@ -33,10 +33,36 @@ jobs:
       fail-fast: false
       matrix:
         settings:
+          - host: macos-latest
+          - arch: x86_64
+          - sys: apple
+          - env: darwin
+          - test: true
+          - host: macos-latest
+          - arch: aarch64
+          - sys: apple
+          - env: darwin
+          - test: false
+          - host: windows-latest
+          - arch: x86_64
+          - sys: pc-windows
+          - env: msvc
+          - test: true
+          - host: windows-latest
+          - arch: i686
+          - sys: pc-windows
+          - env: msvc
+          - test: true
+          - host: windows-latest
+          - arch: aarch64
+          - sys: pc-windows
+          - env: msvc
+          - test: false
           - host: ubuntu-latest
             arch: x86_64
             sys: unknown-linux
             env: gnu
+            test: true
           - host: ubuntu-latest
             arch: x86_64
             sys: unknown-linux
@@ -97,6 +123,9 @@ jobs:
         if: ${{ !matrix.settings.docker }}
         run: |
           yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
+      - name: Test Addon (Local)
+        if: ${{ matrix.settings.test }} && ${{ !matrix.settings.docker }}
+        run: |
           yarn test
       - name: Setup QEMU (Docker)
         if: ${{ matrix.settings.docker }}
@@ -115,6 +144,8 @@ jobs:
           push: false
           load: true
           tags: ${{ matrix.settings.docker }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Build Addon (Docker)
         uses: addnab/docker-run-action@v3
         if: ${{ matrix.settings.docker }}
@@ -130,7 +161,7 @@ jobs:
             -w /build
           run: |
             yarn install
-            yarn build
+            yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
             yarn test
       # - name: Upload Artifact
       #   uses: actions/upload-artifact@v3
