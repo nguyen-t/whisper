@@ -1,5 +1,6 @@
 FROM rust:slim-bookworm
 RUN apt update
+RUN apt install -y libclang-dev
 RUN apt install -y nodejs
 RUN apt install -y npm
 RUN npm i -g yarn
