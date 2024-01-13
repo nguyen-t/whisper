@@ -217,14 +217,14 @@ jobs:
           cache: yarn
       - name: Compare Version
         run: |
-          [[ $(git tag --list | tail -n 1) != "v$(npm pkg get version | tr -d '"')" ]] && true >> $PUBLISH
+          [[ $(git tag --list | tail -n 1) != "v$(npm pkg get version | tr -d '"')" ]] && echo "PUBLISH" >> $PUBLISH
   test-print:
     runs-on: ubuntu-latest
     needs:
       - version-check
     steps:
       - name: Test
-        if: ${{ env.PUBLISH }}
+        if: ${{ env.PUBLISH == 'PUBLISH' }}
         run: echo ${{ env.PUBLISH }}
   publish:
     name: Publish
