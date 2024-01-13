@@ -33,54 +33,54 @@ jobs:
       fail-fast: false
       matrix:
         settings:
-          - host: macos-latest
-            arch: x86_64
-            sys: apple
-            env: darwin
-            test: true
-          - host: macos-latest
-            arch: aarch64
-            sys: apple
-            env: darwin
-            test: false
-          - host: windows-latest
-            arch: x86_64
-            sys: pc-windows
-            env: msvc
-            test: true
-          - host: windows-latest
-            arch: i686
-            sys: pc-windows
-            env: msvc
-            test: false
-          - host: windows-latest
-            arch: aarch64
-            sys: pc-windows
-            env: msvc
-            test: false
+          # - host: macos-latest
+          #   arch: x86_64
+          #   sys: apple
+          #   env: darwin
+          #   test: true
+          # - host: macos-latest
+          #   arch: aarch64
+          #   sys: apple
+          #   env: darwin
+          #   test: false
+          # - host: windows-latest
+          #   arch: x86_64
+          #   sys: pc-windows
+          #   env: msvc
+          #   test: true
+          # - host: windows-latest
+          #   arch: i686
+          #   sys: pc-windows
+          #   env: msvc
+          #   test: false
+          # - host: windows-latest
+          #   arch: aarch64
+          #   sys: pc-windows
+          #   env: msvc
+          #   test: false
           - host: ubuntu-latest
             arch: x86_64
             sys: unknown-linux
             env: gnu
             test: true
-          - host: ubuntu-latest
-            arch: x86_64
-            sys: unknown-linux
-            env: musl
-            docker: napi-custom-x86_64-unknown-linux-musl:latest
-            qemu: linux/amd64
-          - host: ubuntu-latest
-            arch: aarch64
-            sys: unknown-linux
-            env: gnu
-            docker: napi-custom-aarch64-unknown-linux-gnu:latest
-            qemu: linux/arm64
-          - host: ubuntu-latest
-            arch: aarch64
-            sys: unknown-linux
-            env: musl
-            docker: napi-custom-aarch64-unknown-linux-musl:latest
-            qemu: linux/arm64
+          # - host: ubuntu-latest
+          #   arch: x86_64
+          #   sys: unknown-linux
+          #   env: musl
+          #   docker: napi-custom-x86_64-unknown-linux-musl:latest
+          #   qemu: linux/amd64
+          # - host: ubuntu-latest
+          #   arch: aarch64
+          #   sys: unknown-linux
+          #   env: gnu
+          #   docker: napi-custom-aarch64-unknown-linux-gnu:latest
+          #   qemu: linux/arm64
+          # - host: ubuntu-latest
+          #   arch: aarch64
+          #   sys: unknown-linux
+          #   env: musl
+          #   docker: napi-custom-aarch64-unknown-linux-musl:latest
+          #   qemu: linux/arm64
           # - host: ubuntu-latest
           #   arch: armv7
           #   sys: unknown-linux
@@ -201,6 +201,13 @@ jobs:
           name: bindings-universal-apple-darwin
           path: ${{ env.APP_NAME }}.*.node
           if-no-files-found: error
+  version-check:
+    name: Version Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Compare Version
+        run: |
+          echo ${{ github.ref_name }}
   publish:
     name: Publish
     runs-on: ubuntu-latest
@@ -208,6 +215,7 @@ jobs:
     needs:
       - build
       - universal-macOS
+      - version-check
     steps:
       - uses: actions/checkout@v4
         with:
