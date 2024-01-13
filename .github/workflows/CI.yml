@@ -124,7 +124,7 @@ jobs:
         run: |
           yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
       - name: Test Addon (Local)
-        if: ${{ matrix.settings.test }} && ${{ !matrix.settings.docker }}
+        if: ${{ matrix.settings.test }}
         run: |
           yarn test
       - name: Setup QEMU (Docker)
