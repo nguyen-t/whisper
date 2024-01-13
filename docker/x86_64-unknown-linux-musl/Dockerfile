@@ -10,7 +10,6 @@ COPY --from=node /usr/local/bin /usr/local/bin
 RUN apk add --no-cache gcc
 RUN apk add --no-cache g++
 RUN apk add --no-cache clang-dev
-RUN apk add --no-cache musl-dev
 RUN apk add --no-cache yarn
 RUN rustup toolchain install nightly
 RUN rustup default nightly
