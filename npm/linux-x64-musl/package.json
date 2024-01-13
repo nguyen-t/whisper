@@ -1,0 +1,24 @@
+{
+  "name": "@nguyen-t/whisper-linux-x64-musl",
+  "version": "0.0.3",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "main": "whisper.linux-x64-musl.node",
+  "files": [
+    "whisper.linux-x64-musl.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "libc": [
+    "musl"
+  ]
+}

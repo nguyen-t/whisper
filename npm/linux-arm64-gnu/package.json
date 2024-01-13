@@ -1,0 +1,24 @@
+{
+  "name": "@nguyen-t/whisper-linux-arm64-gnu",
+  "version": "0.0.3",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
+  "os": [
+    "linux"
+  ],
+  "cpu": [
+    "arm64"
+  ],
+  "main": "whisper.linux-arm64-gnu.node",
+  "files": [
+    "whisper.linux-arm64-gnu.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  },
+  "libc": [
+    "glibc"
+  ]
+}

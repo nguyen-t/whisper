@@ -1,0 +1,18 @@
+{
+  "name": "@nguyen-t/whisper-darwin-universal",
+  "version": "0.0.3",
+  "repository": {
+    "url": "https://github.com/nguyen-t/whisper"
+  },
+  "os": [
+    "darwin"
+  ],
+  "main": "whisper.darwin-universal.node",
+  "files": [
+    "whisper.darwin-universal.node"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">= 10"
+  }
+}

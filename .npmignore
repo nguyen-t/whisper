@@ -2,6 +2,7 @@
 .yarn/
 .cargo/
 npm/
+docker/
 __test__/
 whisper/
 artifacts/
@@ -18,4 +19,4 @@ yarn.lock
 renovate.json
 wrapper.h
 *.rs
-./*.node
+*.node
