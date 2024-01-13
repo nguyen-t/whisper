@@ -101,6 +101,7 @@ jobs:
         with:
           file: docker/${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}/Dockerfile
           push: false
+          load: true
           tags: ${{ matrix.settings.docker }}
       - name: Build Addon (Docker)
         uses: addnab/docker-run-action@v3
