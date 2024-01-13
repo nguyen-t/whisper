@@ -13,6 +13,10 @@ use std::arch::{
 
 fn main() {
   let dir = PathBuf::from(env!("OUT_DIR"));
+  let host_triple = std::env::var("HOST").unwrap();
+  let target_triple = std::env::var("TARGET").unwrap();
+  let host = host_triple.split("-").collect::<Vec<&str>>()[0];
+  let target = target_triple.split("-").collect::<Vec<&str>>()[0];
   let mut cc_ = cc::Build::new();
   let mut cxx_ = cc::Build::new();
 
@@ -20,6 +24,9 @@ fn main() {
   println!("cargo:rustc-link-lib={}", "whisper");
   println!("cargo:rerun-if-changed={}", "whisper");
   println!("cargo:rerun-if-changed={}", "wrapper.h");
+
+  println!("Host Architecture: {}", host);
+  println!("Target Architecture: {}", target);
 
   #[cfg(target_family = "unix")] {
     println!("Family: Unix");
@@ -80,34 +87,30 @@ fn main() {
     cxx_
       .flag("-mcpu=native");
   }
-  #[cfg(all(target_arch = "arm", target_pointer_width = "32"))] {
-    if is_arm_feature_detected!("neon") {
-      println!("Feature: NEON 32 Bit");
-      cc_
-        .flag("-mfpu=neon")
-        .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access");
-      cxx_
-        .flag("-mfpu=neon")
-        .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access");
-    }
-  }
-  #[cfg(all(any(target_arch = "arm", target_arch = "aarch64"), target_pointer_width = "64"))] {
-    if is_arm_feature_detected!("neon") || is_aarch64_feature_detected!("neon") {
-      println!("Feature: NEON 64 Bit");
-      cc_
-        .flag("-mfpu=neon-fp-armv8")
-        .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access")
-        .flag("-funsafe-math-optimizations");
-      cxx_
-        .flag("-mfpu=neon-fp-armv8")
-        .flag("-mfp16-format=ieee")
-        .flag("-mno-unaligned-access")
-        .flag("-funsafe-math-optimizations");
-    }
-  }
+  // #[cfg(target_arch = "arm")] {
+  //   if is_arm_feature_detected!("neon") {
+  //     println!("Feature: NEON 32 Bit");
+  //     cc_
+  //       .flag("-mfpu=neon")
+  //       .flag("-mno-unaligned-access");
+  //     cxx_
+  //       .flag("-mfpu=neon")
+  //       .flag("-mno-unaligned-access");
+  //   }
+  // }
+  // #[cfg(target_arch = "aarch64")] {
+  //   if is_aarch64_feature_detected!("neon") {
+  //     println!("Feature: NEON 64 Bit");
+  //     cc_
+  //       .flag("-mfpu=neon-fp-armv8")
+  //       .flag("-mno-unaligned-access")
+  //       .flag("-funsafe-math-optimizations");
+  //     cxx_
+  //       .flag("-mfpu=neon-fp-armv8")
+  //       .flag("-mno-unaligned-access")
+  //       .flag("-funsafe-math-optimizations");
+  //   }
+  // }
   #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
     if is_x86_feature_detected!("avx") {
       println!("Feature: AVX");
@@ -152,6 +155,7 @@ fn main() {
         .flag("-mssse3");
     }
   }
+
   cc_
     .cpp(false)
     .std("c11")
@@ -161,6 +165,7 @@ fn main() {
     .warnings(false)
     .opt_level(3)
     .pic(true)
+    .static_flag(true)
     .file("whisper/ggml.c")
     .file("whisper/ggml-alloc.c")
     .file("whisper/ggml-backend.c")
@@ -176,6 +181,7 @@ fn main() {
     .warnings(false)
     .opt_level(3)
     .pic(true)
+    .static_flag(true)
     .object(dir.join("whisper/ggml.o"))
     .object(dir.join("whisper/ggml-alloc.o"))
     .object(dir.join("whisper/ggml-backend.o"))

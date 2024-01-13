@@ -14,7 +14,7 @@ napi-derive = "2.12.2"
 
 [build-dependencies]
 bindgen = "0.69.1"
-cc = "1.0.83"
+cc =  { version = "1.0.83", features = ["parallel"] }
 napi-build = "2.0.1"
 
 [profile.release]

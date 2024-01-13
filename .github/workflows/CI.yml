@@ -34,150 +34,180 @@ jobs:
       matrix:
         settings:
           - host: macos-latest
-            target: x86_64-apple-darwin
-            build: |
-              yarn build
-              strip -x *.node
+            arch: x86_64
+            sys: apple
+            env: darwin
+            test: true
+          - host: macos-latest
+            arch: aarch64
+            sys: apple
+            env: darwin
+            test: false
           - host: windows-latest
-            build: yarn build
-            target: x86_64-pc-windows-msvc
+            arch: x86_64
+            sys: pc-windows
+            env: msvc
+            test: true
+          - host: windows-latest
+            arch: i686
+            sys: pc-windows
+            env: msvc
+            test: false
+          - host: windows-latest
+            arch: aarch64
+            sys: pc-windows
+            env: msvc
+            test: false
           - host: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            build: |
-              yarn build --target x86_64-unknown-linux-gnu
-              strip *.node
-    name: stable - ${{ matrix.settings.target }} - node@18
+            arch: x86_64
+            sys: unknown-linux
+            env: gnu
+            test: true
+          - host: ubuntu-latest
+            arch: x86_64
+            sys: unknown-linux
+            env: musl
+            docker: napi-custom-x86_64-unknown-linux-musl:latest
+            qemu: linux/amd64
+          - host: ubuntu-latest
+            arch: aarch64
+            sys: unknown-linux
+            env: gnu
+            docker: napi-custom-aarch64-unknown-linux-gnu:latest
+            qemu: linux/arm64
+          - host: ubuntu-latest
+            arch: aarch64
+            sys: unknown-linux
+            env: musl
+            docker: napi-custom-aarch64-unknown-linux-musl:latest
+            qemu: linux/arm64
+          # - host: ubuntu-latest
+          #   arch: armv7
+          #   sys: unknown-linux
+          #   env: gnueabihf
+          #   docker: napi-custom-armv7-unknown-linux-gnueabihf:latest
+          #   qemu: linux/arm/v7
+    name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: yarn
-      - name: Install
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: nightly
-          targets: ${{ matrix.settings.target }}
-      - name: Cache cargo
+      - name: Cache Cargo
         uses: actions/cache@v3
         with:
+          key: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}-cargo-${{ matrix.settings.host }}
           path: |
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             .cargo-cache
             target/
-          key: ${{ matrix.settings.target }}-cargo-${{ matrix.settings.host }}
-      - uses: goto-bus-stop/setup-zig@v2
-        if: ${{ matrix.settings.target == 'armv7-unknown-linux-gnueabihf' }}
+      - name: Setup Node.js (Local)
+        uses: actions/setup-node@v4
+        if: ${{ !matrix.settings.docker }}
         with:
-          version: 0.11.0
-      - name: Setup toolchain
-        run: ${{ matrix.settings.setup }}
-        if: ${{ matrix.settings.setup }}
-        shell: bash
-      - name: Setup node x86
-        if: matrix.settings.target == 'i686-pc-windows-msvc'
-        run: yarn config set supportedArchitectures.cpu "ia32"
-        shell: bash
+            node-version: 20
+            cache: yarn
+      - name: Setup Rust (Local)
+        uses: dtolnay/rust-toolchain@stable
+        if: ${{ !matrix.settings.docker }}
+        with:
+          toolchain: nightly
+          targets: ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
+      - name: Install Dependencies (Local)
+        if: ${{ !matrix.settings.docker }}
+        run: |
+          yarn install
+      - name: Build Addon (Local)
+        if: ${{ !matrix.settings.docker }}
+        run: |
+          yarn build --target ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
+      - name: Test Addon (Local)
+        if: ${{ matrix.settings.test }}
+        run: |
+          yarn test
+      - name: Setup QEMU (Docker)
+        if: ${{ matrix.settings.docker }}
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: ${{ matrix.settings.qemu }}
+      - name: Setup Buildx (Docker)
+        if: ${{ matrix.settings.docker }}
+        uses: docker/setup-buildx-action@v3
+      - name: Build Image (Docker)
+        uses: docker/build-push-action@v5
+        if: ${{ matrix.settings.docker }}
+        with:
+          platforms: ${{ matrix.settings.qemu }}
+          file: docker/${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}/Dockerfile
+          push: false
+          load: true
+          tags: ${{ matrix.settings.docker }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - name: Build Addon (Docker)
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: >
+            --user 0:0
+            --platform ${{ matrix.settings.qemu }}
+            -v ${{ github.workspace }}/.cargo-cache/git/db
+            -v ${{ github.workspace }}/.cargo/registry/cache
+            -v ${{ github.workspace }}/.cargo/registry/index
+            -v ${{ github.workspace }}:/build
+            -w /build
+          run: |
+            yarn install
+            yarn build
+            yarn test
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bindings-${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
+          path: ${{ env.APP_NAME }}.*.node
+          if-no-files-found: error
+  universal-macOS:
+    name: Universal macOS Binary
+    needs:
+      - build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
       - name: Install dependencies
         run: yarn install
-      - name: Setup node x86
-        uses: actions/setup-node@v4
-        if: matrix.settings.target == 'i686-pc-windows-msvc'
+      - name: Download macOS x64 artifact
+        uses: actions/download-artifact@v3
         with:
-          node-version: 18
-          cache: yarn
-          architecture: x86
-      - name: Build
-        run: ${{ matrix.settings.build }}
-        shell: bash
+          name: bindings-x86_64-apple-darwin
+          path: artifacts
+      - name: Download macOS arm64 artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: bindings-aarch64-apple-darwin
+          path: artifacts
+      - name: Combine binaries
+        run: yarn universal
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: bindings-${{ matrix.settings.target }}
+          name: bindings-universal-apple-darwin
           path: ${{ env.APP_NAME }}.*.node
           if-no-files-found: error
-  test-macOS-windows-binding:
-    name: Test bindings on ${{ matrix.settings.target }} - node@${{ matrix.node }}
-    needs:
-      - build
-    strategy:
-      fail-fast: false
-      matrix:
-        settings:
-          - host: macos-latest
-            target: x86_64-apple-darwin
-          - host: windows-latest
-            target: x86_64-pc-windows-msvc
-        node:
-          - '18'
-          - '20'
-    runs-on: ${{ matrix.settings.host }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-          cache: yarn
-      - name: Install dependencies
-        run: yarn install
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-${{ matrix.settings.target }}
-          path: .
-      - name: List packages
-        run: ls -R .
-        shell: bash
-      - name: Test bindings
-        run: yarn test
-  test-linux-x64-gnu-binding:
-    name: Test bindings on Linux-x64-gnu - node@${{ matrix.node }}
-    needs:
-      - build
-    strategy:
-      fail-fast: false
-      matrix:
-        node:
-          - '18'
-          - '20'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-          cache: yarn
-      - name: Install dependencies
-        run: yarn install
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: bindings-x86_64-unknown-linux-gnu
-          path: .
-      - name: List packages
-        run: ls -R .
-        shell: bash
-      - name: Test bindings
-        run: yarn test
   publish:
     name: Publish
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
     needs:
-      - test-macOS-windows-binding
-      - test-linux-x64-gnu-binding
+      - build
+      - universal-macOS
     steps:
       - uses: actions/checkout@v4
         with:

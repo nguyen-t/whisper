@@ -8,7 +8,7 @@ export const enum WhisperSamplingStrategy {
   BEAM_SEARCH = 1
 }
 export class Whisper {
-  constructor(path: string, gpu: boolean)
+  constructor(path: string, gpu?: boolean | undefined | null)
   infer(buffer: Buffer): string
   strategy(strategy: WhisperSamplingStrategy, value: number): this
   nThreads(numThreads: number): this

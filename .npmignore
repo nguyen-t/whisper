@@ -2,6 +2,7 @@
 .yarn/
 .cargo/
 npm/
+docker/
 __test__/
 whisper/
 artifacts/

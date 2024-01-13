@@ -31,10 +31,13 @@ pub struct Whisper {
 #[napi]
 impl Whisper {
   #[napi(constructor)]
-  pub fn new(path: String, gpu: bool) -> Self {
+  pub fn new(path: String, gpu: Option<bool>) -> Self {
     let model_path = CString::new(path).unwrap();
     let cparams = whisper_context_params {
-      use_gpu: gpu,
+      use_gpu: match gpu {
+        Some(value) => value,
+        None => false,
+      },
     };
     let wparams = unsafe {
       whisper_full_default_params(whisper_sampling_strategy_WHISPER_SAMPLING_GREEDY)
@@ -64,6 +67,9 @@ impl Whisper {
     let cpus = cmp::min(thread::available_parallelism().unwrap().get() as i32, params.n_threads);
     let mut output = String::new();
 
+    if ctx == std::ptr::null_mut() {
+      return Err(Error::new(Status::InvalidArg, "Whisper model not properly loaded"));
+    }
     if spec.channels != 1 {
       return Err(Error::new(Status::InvalidArg, "Channels must be equal to 1"));
     }
