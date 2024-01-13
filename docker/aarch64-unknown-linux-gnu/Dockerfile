@@ -1,3 +1,6 @@
-FROM ghcr.io/napi-rs/napi-rs/nodejs-rust:lts-debian-aarch64
+FROM rust:slim-bookworm
+RUN apt update
+RUN apt install -y nodejs
+RUN npm i -g yarn
 RUN rustup toolchain install nightly
 RUN rustup default nightly
