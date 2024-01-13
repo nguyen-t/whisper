@@ -27,6 +27,7 @@ on:
       - '**/*.gitignore'
       - .editorconfig
       - docs/**
+
 jobs:
   build:
     strategy:
@@ -81,12 +82,12 @@ jobs:
             env: musl
             docker: napi-custom-aarch64-unknown-linux-musl:latest
             qemu: linux/arm64
-          # - host: ubuntu-latest
-          #   arch: armv7
-          #   sys: unknown-linux
-          #   env: gnueabihf
-          #   docker: napi-custom-armv7-unknown-linux-gnueabihf:latest
-          #   qemu: linux/arm/v7
+          - host: ubuntu-latest
+            arch: armv7
+            sys: unknown-linux
+            env: gnueabihf
+            docker: napi-custom-armv7-unknown-linux-gnueabihf:latest
+            qemu: linux/arm/v7
     name: Build - ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{  matrix.settings.env }}
     runs-on: ${{ matrix.settings.host }}
     steps:
@@ -212,26 +213,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Setup node
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: yarn
-      - name: Install dependencies
+      - name: Install Dependencies
         run: yarn install
       - name: Download all artifacts
         uses: actions/download-artifact@v3
         with:
           path: artifacts
-      - name: Move artifacts
+      - name: Move Artifacts
         run: yarn artifacts
-      - name: List packages
-        run: ls -R ./npm
-        shell: bash
       - name: Publish
         run: |
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --provenance --tag next --access public
+          npm publish --provenance --tag latest --access public
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
