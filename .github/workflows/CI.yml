@@ -34,30 +34,30 @@ jobs:
       matrix:
         settings:
           - host: macos-latest
-          - arch: x86_64
-          - sys: apple
-          - env: darwin
-          - test: true
+            arch: x86_64
+            sys: apple
+            env: darwin
+            test: true
           - host: macos-latest
-          - arch: aarch64
-          - sys: apple
-          - env: darwin
-          - test: false
+            arch: aarch64
+            sys: apple
+            env: darwin
+            test: false
           - host: windows-latest
-          - arch: x86_64
-          - sys: pc-windows
-          - env: msvc
-          - test: true
+            arch: x86_64
+            sys: pc-windows
+            env: msvc
+            test: true
           - host: windows-latest
-          - arch: i686
-          - sys: pc-windows
-          - env: msvc
-          - test: true
+            arch: i686
+            sys: pc-windows
+            env: msvc
+            test: true
           - host: windows-latest
-          - arch: aarch64
-          - sys: pc-windows
-          - env: msvc
-          - test: false
+            arch: aarch64
+            sys: pc-windows
+            env: msvc
+            test: false
           - host: ubuntu-latest
             arch: x86_64
             sys: unknown-linux
