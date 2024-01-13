@@ -28,23 +28,72 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nguyen-t/whisper-darwin-x64@npm:0.0.0":
-  version: 0.0.0
-  resolution: "@nguyen-t/whisper-darwin-x64@npm:0.0.0"
+"@nguyen-t/whisper-darwin-arm64@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-darwin-arm64@npm:0.0.4"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-darwin-universal@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-darwin-universal@npm:0.0.4"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-darwin-x64@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-darwin-x64@npm:0.0.4"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@nguyen-t/whisper-linux-x64-gnu@npm:0.0.0":
-  version: 0.0.0
-  resolution: "@nguyen-t/whisper-linux-x64-gnu@npm:0.0.0"
+"@nguyen-t/whisper-linux-arm64-gnu@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-linux-arm64-gnu@npm:0.0.4"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-linux-arm64-musl@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-linux-arm64-musl@npm:0.0.4"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-linux-x64-gnu@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-linux-x64-gnu@npm:0.0.4"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@nguyen-t/whisper-win32-x64-msvc@npm:0.0.0":
-  version: 0.0.0
-  resolution: "@nguyen-t/whisper-win32-x64-msvc@npm:0.0.0"
+"@nguyen-t/whisper-linux-x64-musl@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-linux-x64-musl@npm:0.0.4"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-win32-arm64-msvc@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-win32-arm64-msvc@npm:0.0.4"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-win32-ia32-msvc@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-win32-ia32-msvc@npm:0.0.4"
+  conditions: os=win32 & cpu=ia32
+  languageName: node
+  linkType: hard
+
+"@nguyen-t/whisper-win32-x64-msvc@npm:0.0.4":
+  version: 0.0.4
+  resolution: "@nguyen-t/whisper-win32-x64-msvc@npm:0.0.4"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -54,15 +103,36 @@ __metadata:
   resolution: "@nguyen-t/whisper@workspace:."
   dependencies:
     "@napi-rs/cli": "npm:^2.17.0"
-    "@nguyen-t/whisper-darwin-x64": "npm:0.0.0"
-    "@nguyen-t/whisper-linux-x64-gnu": "npm:0.0.0"
-    "@nguyen-t/whisper-win32-x64-msvc": "npm:0.0.0"
+    "@nguyen-t/whisper-darwin-arm64": "npm:0.0.4"
+    "@nguyen-t/whisper-darwin-universal": "npm:0.0.4"
+    "@nguyen-t/whisper-darwin-x64": "npm:0.0.4"
+    "@nguyen-t/whisper-linux-arm64-gnu": "npm:0.0.4"
+    "@nguyen-t/whisper-linux-arm64-musl": "npm:0.0.4"
+    "@nguyen-t/whisper-linux-x64-gnu": "npm:0.0.4"
+    "@nguyen-t/whisper-linux-x64-musl": "npm:0.0.4"
+    "@nguyen-t/whisper-win32-arm64-msvc": "npm:0.0.4"
+    "@nguyen-t/whisper-win32-ia32-msvc": "npm:0.0.4"
+    "@nguyen-t/whisper-win32-x64-msvc": "npm:0.0.4"
     "@types/node": "npm:^20.10.6"
     ava: "npm:^5.1.1"
   dependenciesMeta:
+    "@nguyen-t/whisper-darwin-arm64":
+      optional: true
+    "@nguyen-t/whisper-darwin-universal":
+      optional: true
     "@nguyen-t/whisper-darwin-x64":
       optional: true
+    "@nguyen-t/whisper-linux-arm64-gnu":
+      optional: true
+    "@nguyen-t/whisper-linux-arm64-musl":
+      optional: true
     "@nguyen-t/whisper-linux-x64-gnu":
+      optional: true
+    "@nguyen-t/whisper-linux-x64-musl":
+      optional: true
+    "@nguyen-t/whisper-win32-arm64-msvc":
+      optional: true
+    "@nguyen-t/whisper-win32-ia32-msvc":
       optional: true
     "@nguyen-t/whisper-win32-x64-msvc":
       optional: true
@@ -142,9 +212,9 @@ __metadata:
   linkType: hard
 
 "acorn-walk@npm:^8.2.0":
-  version: 8.3.1
-  resolution: "acorn-walk@npm:8.3.1"
-  checksum: a23d2f7c6b6cad617f4c77f14dfeb062a239208d61753e9ba808d916c550add92b39535467d2e6028280761ac4f5a904cc9df21530b84d3f834e3edef74ddde5
+  version: 8.3.2
+  resolution: "acorn-walk@npm:8.3.2"
+  checksum: 7e2a8dad5480df7f872569b9dccff2f3da7e65f5353686b1d6032ab9f4ddf6e3a2cb83a9b52cf50b1497fd522154dda92f0abf7153290cc79cd14721ff121e52
   languageName: node
   linkType: hard
 
