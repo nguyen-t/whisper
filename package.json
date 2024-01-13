@@ -14,7 +14,7 @@
   "bugs": {
     "url": "https://github.com/nguyen-t/whisper/issues"
   },
-  "version": "0.0.3",
+  "version": "0.0.4",
   "main": "index.js",
   "types": "index.d.ts",
   "napi": {
@@ -57,15 +57,8 @@
   },
   "packageManager": "yarn@4.0.2",
   "optionalDependencies": {
-    "@nguyen-t/whisper-win32-x64-msvc": "0.0.3",
-    "@nguyen-t/whisper-darwin-x64": "0.0.3",
-    "@nguyen-t/whisper-linux-x64-gnu": "0.0.3",
-    "@nguyen-t/whisper-darwin-arm64": "0.0.3",
-    "@nguyen-t/whisper-linux-arm64-gnu": "0.0.3",
-    "@nguyen-t/whisper-linux-arm64-musl": "0.0.3",
-    "@nguyen-t/whisper-win32-arm64-msvc": "0.0.3",
-    "@nguyen-t/whisper-linux-x64-musl": "0.0.3",
-    "@nguyen-t/whisper-win32-ia32-msvc": "0.0.3",
-    "@nguyen-t/whisper-darwin-universal": "0.0.3"
+    "@nguyen-t/whisper-darwin-x64": "0.0.0",
+    "@nguyen-t/whisper-linux-x64-gnu": "0.0.0",
+    "@nguyen-t/whisper-win32-x64-msvc": "0.0.0"
   }
 }
