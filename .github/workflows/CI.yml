@@ -52,7 +52,7 @@ jobs:
           - host: ubuntu-latest
             arch: aarch64
             sys: unknown-linux
-            env: gnu
+            env: musl
             docker: napi-custom-aarch64-unknown-linux-musl:latest
             qemu: linux/arm64
           - host: ubuntu-latest

@@ -1,11 +1,13 @@
 import test from 'ava';
+import { cpus } from 'node:os';
 import { readFileSync } from 'node:fs';
 import { Whisper, WhisperSamplingStrategy } from '../index.js';
 
 test('Whisper initialization', (t) => {
+  const cores = cpus().length;
   const whisper = new Whisper('whisper/models/for-tests-ggml-tiny.en.bin')
     .strategy(WhisperSamplingStrategy.GREEDY, 2)
-    .nThreads(1)
+    .nThreads(cores)
     .nMaxTextCtx(-1)
     .language("en")
     .entropyThold(2.40)
