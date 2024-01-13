@@ -80,8 +80,6 @@ jobs:
       - name: Install Dependencies (Local)
         if: ${{ !matrix.settings.docker }}
         run: |
-          yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
-          yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
           yarn install
       - name: Build Addon (Local)
         if: ${{ !matrix.settings.docker }}
@@ -117,12 +115,6 @@ jobs:
             -v ${{ github.workspace }}:/build
             -w /build
           run: |
-            apk add --no-cache libatomic
-            rustup toolchain install nightly
-            rustup target add ${{ matrix.settings.arch }}-${{ matrix.settings.sys }}-${{ matrix.settings.env }}
-            rustup default nightly
-            yarn config set supportedArchitectures.cpu "${{ matrix.settings.arch }}"
-            yarn config set supportedArchitectures.libc "${{ matrix.settings.env }}"
             yarn install
             yarn build
             yarn test
