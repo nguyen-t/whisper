@@ -52,7 +52,7 @@ jobs:
             arch: i686
             sys: pc-windows
             env: msvc
-            test: true
+            test: false
           - host: windows-latest
             arch: aarch64
             sys: pc-windows

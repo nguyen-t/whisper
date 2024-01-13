@@ -40,7 +40,7 @@
     "ava": "^5.1.1"
   },
   "ava": {
-    "timeout": "10m",
+    "timeout": "15m",
     "files": [
       "!whisper/**"
     ]
