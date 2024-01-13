@@ -174,6 +174,7 @@ fn main() {
   cxx_
     .cpp(true)
     .std("c++14")
+    .cpp_set_stdlib("c++")
     .include("whisper")
     .include("whisper/coreml")
     .define("NDEBUG", None)
