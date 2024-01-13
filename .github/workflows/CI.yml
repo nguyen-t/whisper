@@ -220,6 +220,8 @@ jobs:
           [[ $(git tag --list | tail -n 1) != "v$(npm pkg get version | tr -d '"')" ]] && true >> $PUBLISH
   test-print:
     runs-on: ubuntu-latest
+    needs:
+      - version-check
     steps:
       - name: Test
         if: ${{ env.PUBLISH }}
