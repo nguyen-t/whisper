@@ -1,0 +1,36 @@
+[env]
+OUT_DIR = "bindings"
+
+[env.x86_64-apple-darwin]
+CFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+CXXFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+
+[env.x86_64-pc-windows-msvc]
+CFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+CXXFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+
+[env.x86_64-unknown-linux-gnu]
+CFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+CXXFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+
+[env.x86_64-unknown-linux-musl]
+CFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+CXXFLAGS = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+
+[env.i686-pc-windows-msvc]
+
+[env.aarch64-apple-darwin]
+CFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+CXXFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+
+[env.aarch64-pc-windows-msvc]
+CFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+CXXFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+
+[env.aarch64-unknown-linux-gnu]
+CFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+CXXFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+
+[env.aarch64-unknown-linux-musl]
+CFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+CXXFLAGS = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"

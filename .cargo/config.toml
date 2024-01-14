@@ -1,10 +1,10 @@
 [env]
 OUT_DIR = "bindings"
 
-[target.x86_64-apple-darwin]
-[target.x86_64-pc-windows-msvc]
-[target.i686-pc-windows-msvc]
-[target.x86_64-unknown-linux-gnu]
-[target.x86_64-unknown-linux-musl]
-[target.aarch64-apple-darwin]
-[target.aarch64-unknown-linux-musl]
+[target.'cfg(target_arch = "x86_64")']
+cflags = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+cxxflags = "-mavx -mavx2 -mfma -mf16c -msse3 -mssse3"
+
+[target.'cfg(target_arch = "aarch64")']
+cflags = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"
+cxxflags = "-mcpu=native -mfpu=neon -mno-unaligned-access -funsafe-math-optimizations"

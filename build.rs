@@ -4,6 +4,7 @@ extern crate bindgen;
 extern crate napi_build;
 
 
+use std::env::var;
 use std::path::PathBuf;
 use std::arch::{
   is_x86_feature_detected,
@@ -13,8 +14,8 @@ use std::arch::{
 
 fn main() {
   let dir = PathBuf::from(env!("OUT_DIR"));
-  let host_triple = std::env::var("HOST").unwrap();
-  let target_triple = std::env::var("TARGET").unwrap();
+  let host_triple = var("HOST").unwrap();
+  let target_triple = var("TARGET").unwrap();
   let host = host_triple.split("-").collect::<Vec<&str>>()[0];
   let target = target_triple.split("-").collect::<Vec<&str>>()[0];
   let mut cc_ = cc::Build::new();
@@ -24,9 +25,6 @@ fn main() {
   println!("cargo:rustc-link-lib={}", "whisper");
   println!("cargo:rerun-if-changed={}", "whisper");
   println!("cargo:rerun-if-changed={}", "wrapper.h");
-
-  println!("Host Architecture: {}", host);
-  println!("Target Architecture: {}", target);
 
   #[cfg(target_family = "unix")] {
     println!("Family: Unix");
@@ -79,82 +77,115 @@ fn main() {
     cxx_
       .define("_NETBSD_SOURCE", None);
   }
-  
-  #[cfg(target_arch = "aarch64")] {
-    println!("Architecture: AARCH64");
-    cc_
-      .flag("-mcpu=native");
-    cxx_
-      .flag("-mcpu=native");
-  }
-  // #[cfg(target_arch = "arm")] {
-  //   if is_arm_feature_detected!("neon") {
-  //     println!("Feature: NEON 32 Bit");
-  //     cc_
-  //       .flag("-mfpu=neon")
-  //       .flag("-mno-unaligned-access");
-  //     cxx_
-  //       .flag("-mfpu=neon")
-  //       .flag("-mno-unaligned-access");
-  //   }
-  // }
-  // #[cfg(target_arch = "aarch64")] {
-  //   if is_aarch64_feature_detected!("neon") {
-  //     println!("Feature: NEON 64 Bit");
-  //     cc_
-  //       .flag("-mfpu=neon-fp-armv8")
-  //       .flag("-mno-unaligned-access")
-  //       .flag("-funsafe-math-optimizations");
-  //     cxx_
-  //       .flag("-mfpu=neon-fp-armv8")
-  //       .flag("-mno-unaligned-access")
-  //       .flag("-funsafe-math-optimizations");
-  //   }
-  // }
-  #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
-    if is_x86_feature_detected!("avx") {
-      println!("Feature: AVX");
-      cc_
-        .flag("-mavx");
-      cxx_
-        .flag("-mavx");
+
+  if target == host {
+    // #[cfg(target_arch = "arm")] {
+    //   if is_arm_feature_detected!("neon") {
+    //     println!("Feature: NEON 32 Bit");
+    //     cc_
+    //       .flag("-mfpu=neon")
+    //       .flag("-mno-unaligned-access");
+    //     cxx_
+    //       .flag("-mfpu=neon")
+    //       .flag("-mno-unaligned-access");
+    //   }
+    // }
+    #[cfg(target_arch = "aarch64")] {
+      if is_aarch64_feature_detected!("neon") {
+        println!("Feature: NEON 64 Bit");
+        cc_
+          .flag("-mcpu=native")
+          .flag("-mfpu=neon-fp-armv8")
+          .flag("-mno-unaligned-access")
+          .flag("-funsafe-math-optimizations");
+        cxx_
+          .flag("-mcpu=native")
+          .flag("-mfpu=neon-fp-armv8")
+          .flag("-mno-unaligned-access")
+          .flag("-funsafe-math-optimizations");
+      }
     }
-    if is_x86_feature_detected!("avx2") {
-      println!("Feature: AVX2");
-      cc_
-        .flag("-mavx2");
-      cxx_
-        .flag("-mavx2");
-    }
-    if is_x86_feature_detected!("fma") {
-      println!("Feature: FMA");
-      cc_
-        .flag("-mfma");
-      cxx_
-        .flag("-mfma");
-    }
-    if is_x86_feature_detected!("f16c") {
-      println!("Feature: F16C");
-      cc_
-        .flag("-mf16c");
-      cxx_
-        .flag("-mf16c");
-    }
-    if is_x86_feature_detected!("sse3") {
-      println!("Feature: SSE3");
-      cc_
-        .flag("-msse3");
-      cxx_
-        .flag("-msse3");
-    }
-    if is_x86_feature_detected!("ssse3") {
-      println!("Feature: SSSE3");
-      cc_
-        .flag("-mssse3");
-      cxx_
-        .flag("-mssse3");
+    #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
+      if is_x86_feature_detected!("avx") {
+        println!("Feature: AVX");
+        cc_
+          .flag("-mavx");
+        cxx_
+          .flag("-mavx");
+      }
+      if is_x86_feature_detected!("avx2") {
+        println!("Feature: AVX2");
+        cc_
+          .flag("-mavx2");
+        cxx_
+          .flag("-mavx2");
+      }
+      if is_x86_feature_detected!("fma") {
+        println!("Feature: FMA");
+        cc_
+          .flag("-mfma");
+        cxx_
+          .flag("-mfma");
+      }
+      if is_x86_feature_detected!("f16c") {
+        println!("Feature: F16C");
+        cc_
+          .flag("-mf16c");
+        cxx_
+          .flag("-mf16c");
+      }
+      if is_x86_feature_detected!("sse3") {
+        println!("Feature: SSE3");
+        cc_
+          .flag("-msse3");
+        cxx_
+          .flag("-msse3");
+      }
+      if is_x86_feature_detected!("ssse3") {
+        println!("Feature: SSSE3");
+        cc_
+          .flag("-mssse3");
+        cxx_
+          .flag("-mssse3");
+      }
     }
   }
+
+  if host != target {
+    println!("Crosscompiling: {} -> {}", host, target);
+    println!("Features: {}", var("CARGO_CFG_TARGET_FEATURE").unwrap());
+
+    if var("CARGO_CFG_TARGET_ARCH").unwrap() == "aarch64" {
+      cc_
+        .flag("-mcpu=native")
+        .flag("-mfpu=neon-fp-armv8")
+        .flag("-mno-unaligned-access")
+        .flag("-funsafe-math-optimizations");
+      cxx_
+        .flag("-mcpu=native")
+        .flag("-mfpu=neon-fp-armv8")
+        .flag("-mno-unaligned-access")
+        .flag("-funsafe-math-optimizations");
+    }
+    if var("CARGO_CFG_TARGET_ARCH").unwrap() == "x86_64" {
+      cc_
+        .flag("-mavx")
+        .flag("-mavx2")
+        .flag("-mfma")
+        .flag("-mf16c")
+        .flag("-msse3")
+        .flag("-mssse3");
+      cxx_
+        .flag("-mavx")
+        .flag("-mavx2")
+        .flag("-mfma")
+        .flag("-mf16c")
+        .flag("-msse3")
+        .flag("-mssse3");
+    }
+  }
+
+  println!("Features: {}", var("CARGO_CFG_TARGET_FEATURE").unwrap_or_default());
 
   cc_
     .cpp(false)
