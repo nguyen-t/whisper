@@ -29,9 +29,9 @@ fn main() {
   #[cfg(target_family = "unix")] {
     println!("Family: Unix");
     cc_
-      .flag("-pthread");
+      .flag_if_supported("-pthread");
     cxx_
-      .flag("-pthread");
+      .flag_if_supported("-pthread");
   }
   #[cfg(target_os = "openbsd")] {
     println!("OS: OpenBSD");
@@ -83,70 +83,70 @@ fn main() {
     //   if is_arm_feature_detected!("neon") {
     //     println!("Feature: NEON 32 Bit");
     //     cc_
-    //       .flag("-mfpu=neon")
-    //       .flag("-mno-unaligned-access");
+    //       .flag_if_supported("-mfpu=neon")
+    //       .flag_if_supported("-mno-unaligned-access");
     //     cxx_
-    //       .flag("-mfpu=neon")
-    //       .flag("-mno-unaligned-access");
+    //       .flag_if_supported("-mfpu=neon")
+    //       .flag_if_supported("-mno-unaligned-access");
     //   }
     // }
     #[cfg(target_arch = "aarch64")] {
       if is_aarch64_feature_detected!("neon") {
         println!("Feature: NEON 64 Bit");
         cc_
-          .flag("-mcpu=native")
-          .flag("-mfpu=neon-fp-armv8")
-          .flag("-mno-unaligned-access")
-          .flag("-funsafe-math-optimizations");
+          .flag_if_supported("-mcpu=native")
+          .flag_if_supported("-mfpu=neon-fp-armv8")
+          .flag_if_supported("-mno-unaligned-access")
+          .flag_if_supported("-funsafe-math-optimizations");
         cxx_
-          .flag("-mcpu=native")
-          .flag("-mfpu=neon-fp-armv8")
-          .flag("-mno-unaligned-access")
-          .flag("-funsafe-math-optimizations");
+          .flag_if_supported("-mcpu=native")
+          .flag_if_supported("-mfpu=neon-fp-armv8")
+          .flag_if_supported("-mno-unaligned-access")
+          .flag_if_supported("-funsafe-math-optimizations");
       }
     }
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))] {
       if is_x86_feature_detected!("avx") {
         println!("Feature: AVX");
         cc_
-          .flag("-mavx");
+          .flag_if_supported("-mavx");
         cxx_
-          .flag("-mavx");
+          .flag_if_supported("-mavx");
       }
       if is_x86_feature_detected!("avx2") {
         println!("Feature: AVX2");
         cc_
-          .flag("-mavx2");
+          .flag_if_supported("-mavx2");
         cxx_
-          .flag("-mavx2");
+          .flag_if_supported("-mavx2");
       }
       if is_x86_feature_detected!("fma") {
         println!("Feature: FMA");
         cc_
-          .flag("-mfma");
+          .flag_if_supported("-mfma");
         cxx_
-          .flag("-mfma");
+          .flag_if_supported("-mfma");
       }
       if is_x86_feature_detected!("f16c") {
         println!("Feature: F16C");
         cc_
-          .flag("-mf16c");
+          .flag_if_supported("-mf16c");
         cxx_
-          .flag("-mf16c");
+          .flag_if_supported("-mf16c");
       }
       if is_x86_feature_detected!("sse3") {
         println!("Feature: SSE3");
         cc_
-          .flag("-msse3");
+          .flag_if_supported("-msse3");
         cxx_
-          .flag("-msse3");
+          .flag_if_supported("-msse3");
       }
       if is_x86_feature_detected!("ssse3") {
         println!("Feature: SSSE3");
         cc_
-          .flag("-mssse3");
+          .flag_if_supported("-mssse3");
         cxx_
-          .flag("-mssse3");
+          .flag_if_supported("-mssse3");
       }
     }
   }
@@ -157,31 +157,31 @@ fn main() {
 
     if var("CARGO_CFG_TARGET_ARCH").unwrap() == "aarch64" {
       cc_
-        .flag("-mcpu=native")
-        .flag("-mfpu=neon-fp-armv8")
-        .flag("-mno-unaligned-access")
-        .flag("-funsafe-math-optimizations");
+        .flag_if_supported("-mcpu=native")
+        .flag_if_supported("-mfpu=neon-fp-armv8")
+        .flag_if_supported("-mno-unaligned-access")
+        .flag_if_supported("-funsafe-math-optimizations");
       cxx_
-        .flag("-mcpu=native")
-        .flag("-mfpu=neon-fp-armv8")
-        .flag("-mno-unaligned-access")
-        .flag("-funsafe-math-optimizations");
+        .flag_if_supported("-mcpu=native")
+        .flag_if_supported("-mfpu=neon-fp-armv8")
+        .flag_if_supported("-mno-unaligned-access")
+        .flag_if_supported("-funsafe-math-optimizations");
     }
     if var("CARGO_CFG_TARGET_ARCH").unwrap() == "x86_64" {
       cc_
-        .flag("-mavx")
-        .flag("-mavx2")
-        .flag("-mfma")
-        .flag("-mf16c")
-        .flag("-msse3")
-        .flag("-mssse3");
+        .flag_if_supported("-mavx")
+        .flag_if_supported("-mavx2")
+        .flag_if_supported("-mfma")
+        .flag_if_supported("-mf16c")
+        .flag_if_supported("-msse3")
+        .flag_if_supported("-mssse3");
       cxx_
-        .flag("-mavx")
-        .flag("-mavx2")
-        .flag("-mfma")
-        .flag("-mf16c")
-        .flag("-msse3")
-        .flag("-mssse3");
+        .flag_if_supported("-mavx")
+        .flag_if_supported("-mavx2")
+        .flag_if_supported("-mfma")
+        .flag_if_supported("-mf16c")
+        .flag_if_supported("-msse3")
+        .flag_if_supported("-mssse3");
     }
   }
 
