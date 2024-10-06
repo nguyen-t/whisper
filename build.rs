@@ -3,7 +3,6 @@
 extern crate bindgen;
 extern crate napi_build;
 
-
 use std::env::var;
 use std::path::PathBuf;
 use std::arch::{
@@ -158,12 +157,12 @@ fn main() {
     if var("CARGO_CFG_TARGET_ARCH").unwrap() == "aarch64" {
       cc_
         .flag_if_supported("-mcpu=native")
-        .flag_if_supported("-mfpu=neon-fp-armv8")
+        .flag_if_supported("-mfpu=auto")
         .flag_if_supported("-mno-unaligned-access")
         .flag_if_supported("-funsafe-math-optimizations");
       cxx_
         .flag_if_supported("-mcpu=native")
-        .flag_if_supported("-mfpu=neon-fp-armv8")
+        .flag_if_supported("-mfpu=auto")
         .flag_if_supported("-mno-unaligned-access")
         .flag_if_supported("-funsafe-math-optimizations");
     }
