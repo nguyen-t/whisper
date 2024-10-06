@@ -163,6 +163,21 @@ jobs:
           run: |
             yarn install
             yarn build
+      - name: Test Addon (Docker)
+        uses: addnab/docker-run-action@v3
+        if: ${{ matrix.settings.docker }}
+        with:
+          image: ${{ matrix.settings.docker }}
+          options: >
+            --user 0:0
+            --platform ${{ matrix.settings.qemu }}
+            -v ${{ github.workspace }}/.cargo-cache/git/db
+            -v ${{ github.workspace }}/.cargo/registry/cache
+            -v ${{ github.workspace }}/.cargo/registry/index
+            -v ${{ github.workspace }}:/build
+            -w /build
+          run: |
+            yarn install
             yarn test
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
@@ -220,7 +235,7 @@ jobs:
           cache: yarn
       - name: Install Dependencies
         run: yarn install
-      - name: Download all artifacts
+      - name: Download Artifacts
         uses: actions/download-artifact@v3
         with:
           path: artifacts
